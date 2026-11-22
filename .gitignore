@@ -1,0 +1,26 @@
+# Private data: never commit the database or uploaded photos (licences, IDs, trip photos)
+DriveMate.Server/App_Data/
+
+# Build output
+bin/
+obj/
+dist/
+node_modules/
+*.tsbuildinfo
+
+# Visual Studio / editor local files
+.vs/
+*.user
+*.suo
+.idea/
+
+# Logs and OS files
+*.log
+Thumbs.db
+.DS_Store
+
+# Local secrets (the dev-only JWT key is in appsettings.Development.json; real keys go in user-secrets or env vars)
+appsettings.Production.json
+*.pfx
+.env
+.env.*

@@ -1,0 +1,185 @@
+/* =========================================================
+   Corporate polish: the final layer, loaded after App.css so it
+   wins over earlier rules. Navy structure, one blue accent.
+   ========================================================= */
+
+/* Icons (Lucide SVGs). They size with the text around them. */
+.ico { width: 1.1em; height: 1.1em; flex: none; vertical-align: -0.17em; stroke-width: 2; }
+.empty-icon { width: 40px; height: 40px; color: var(--dm-gray); margin: 0 auto 8px; display: block; stroke-width: 1.5; }
+.trust-icon { width: 30px; height: 30px; color: var(--dm-accent); margin: 0 auto 8px; display: block; stroke-width: 1.6; }
+.menu-icon { width: 22px; height: 22px; color: var(--dm-accent); flex: none; stroke-width: 1.8; }
+.photo-icon { width: 26px; height: 26px; color: var(--dm-gray); stroke-width: 1.6; }
+.next-icon .ico { width: 26px; height: 26px; color: var(--dm-accent); }
+.bottom-tabs .ico { width: 22px; height: 22px; }
+.heart .ico { width: 19px; height: 19px; vertical-align: middle; }
+.stars-row { display: inline-flex; gap: 1px; color: #D97706; vertical-align: middle; }
+.stars-row .ico { width: 14px; height: 14px; vertical-align: baseline; }
+.stars .ico { width: 1.7rem; height: 1.7rem; vertical-align: middle; }
+.stars label { font-size: inherit; }
+.stars label:not(.on) .ico { fill: none; }
+.rating .ico { color: #D97706; fill: #D97706; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #98A2B3; margin-right: 6px; }
+.dot.on { background: #12B76A; }
+.warn-inline { color: #B54708; font-weight: 600; white-space: nowrap; }
+.ico.ok { color: var(--dm-success); }
+.toast { display: flex; align-items: center; gap: 8px; }
+.empty { padding: 28px 20px; }
+.empty h3 { margin: 4px 0; }
+
+/* Brand */
+.brand { display: inline-flex; align-items: center; gap: 8px; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; color: var(--dm-accent); }
+.brand span { color: var(--dm-danger); }
+.logo { color: var(--dm-accent); border-radius: 8px; }
+
+/* Top bar */
+.topbar { padding: 10px 24px; box-shadow: 0 1px 0 var(--dm-border); border-bottom: 0; }
+.nav-link { border-radius: var(--dm-radius-btn); font-size: 0.92rem; color: #344054; }
+.nav-link:hover { background: var(--dm-surface); }
+.nav-link.active { color: var(--dm-accent); background: var(--dm-surface); }
+.nav-link.pill { background: var(--dm-gradient); color: var(--dm-white); }
+.nav-link.pill:hover { filter: brightness(0.92); }
+.topbar .bell > button { border-radius: var(--dm-radius-btn); color: #344054; }
+.badge { background: var(--dm-danger); }
+
+/* Buttons: rectangular, clear hierarchy */
+.primary, .ghost { border-radius: var(--dm-radius-btn); font-weight: 600; transition: background 0.15s, border-color 0.15s; }
+.primary { background: var(--dm-gradient); box-shadow: 0 1px 2px rgba(11, 30, 63, 0.18); }
+.primary:hover:not(:disabled) { filter: brightness(0.92); }
+.primary:disabled { opacity: 0.45; box-shadow: none; }
+.ghost { background: var(--dm-white); border: 1px solid #C9D1DE; color: var(--dm-navy); }
+.ghost:hover:not(:disabled) { background: var(--dm-surface); border-color: #98A2B3; }
+.ghost.danger { color: var(--dm-danger); border-color: #F1B8B2; }
+.ghost.danger:hover:not(:disabled) { background: #FEF3F2; }
+.link, a { color: var(--dm-accent); }
+.primary .ico, .ghost .ico, .chip .ico { margin-right: 4px; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--dm-accent); outline-offset: 2px; }
+
+/* Cards and forms */
+.card { border-radius: var(--dm-radius-card); box-shadow: var(--dm-shadow); border: 1px solid #E4E8F0; }
+input, select, textarea { border-radius: 8px; border: 1px solid #C9D1DE; padding: 10px 12px; background: var(--dm-white); }
+input:hover, select:hover, textarea:hover { border-color: #98A2B3; }
+input:focus, select:focus, textarea:focus { border-color: var(--dm-accent); outline: 2px solid rgba(124, 58, 237, 0.25); outline-offset: 0; }
+input[type='checkbox'], input[type='radio'] { accent-color: var(--dm-accent); }
+label { color: #344054; font-weight: 500; }
+.hint, .muted { color: var(--dm-gray); }
+.error { color: var(--dm-danger); font-weight: 500; }
+.notice { background: #FFF7E6; color: #7A4B00; border: 1px solid #FCE2A9; }
+.form-errors { background: #FEF3F2; color: #912018; border: 1px solid #FDD3CF; }
+input[aria-invalid='true'] { border-color: var(--dm-danger); background: #FFFBFA; }
+
+/* Hero: navy, no rainbow gradient */
+.hero { background: var(--dm-gradient); border-radius: 0; padding: 48px 20px 44px; }
+.hero h1 { font-weight: 700; letter-spacing: -0.02em; }
+.hero > p { opacity: 0.85; }
+.search-bar { box-shadow: var(--dm-shadow-lg); }
+.toggle { background: #E8ECF3; border-radius: 10px; }
+.toggle button { border-radius: 8px; color: #475467; }
+.toggle .active { color: var(--dm-navy); box-shadow: 0 1px 2px rgba(11, 30, 63, 0.15); }
+.toggle .ico { margin-right: 6px; }
+
+/* Chips, tags, badges */
+.chip { border-radius: var(--dm-radius-btn); border-color: #C9D1DE; font-size: 0.88rem; }
+.chip.on { background: var(--dm-accent); border-color: var(--dm-accent); }
+.tag { background: #EDE9FE; color: var(--dm-accent); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.status-confirmed { background: #DBEAFE; color: #1E40AF; }
+.status-ongoing { background: #EDE9FE; color: var(--dm-accent); }
+.status-pending { background: #FEF3C7; color: #92400E; }
+.status-completed { background: #D1FAE5; color: #065F46; }
+.role-badge { border-radius: 6px; }
+.role-superadmin { background: var(--dm-gradient); color: var(--dm-white); }
+
+/* Vehicle cards */
+.vehicle-card:hover { transform: translateY(-2px); box-shadow: var(--dm-shadow-lg); }
+.vehicle-card-body h3 { font-size: 1.02rem; }
+.price-line strong, .trip-total, .price { color: var(--dm-navy); }
+.price-line strong { font-size: 1.05rem; }
+.heart { color: #667085; }
+.heart.on { color: var(--dm-danger); }
+
+/* Home */
+.section-title { font-size: 1.2rem; }
+.step-num { background: var(--dm-gradient); }
+.trust { background: var(--dm-white); border: 1px solid #E4E8F0; border-radius: var(--dm-radius-card); padding: 22px 16px; box-shadow: var(--dm-shadow); }
+.cta { background: var(--dm-surface); color: var(--dm-navy); border: 0; }
+.cta .muted { color: var(--dm-gray); }
+.cta .primary { background: var(--dm-gradient); color: var(--dm-white); }
+.cta .primary:hover { filter: brightness(0.92); }
+
+/* Booking steps */
+.stepper li.current .dot { background: var(--dm-accent); border-color: var(--dm-accent); }
+.stepper li.current button { color: var(--dm-accent); }
+.stepper li.done .dot { background: var(--dm-success); border-color: var(--dm-success); }
+.stepper .dot .ico { width: 14px; height: 14px; margin: 0; vertical-align: middle; }
+.driver-option { border-radius: 10px; }
+.driver-option.selected { border-color: var(--dm-accent); background: #F5F3FF; box-shadow: inset 0 0 0 1px var(--dm-accent); }
+.summary { background: var(--dm-surface); border: 1px solid #E4E8F0; }
+.summary .total { color: var(--dm-navy); }
+.discount, .summary dd.discount { color: var(--dm-success); }
+
+/* Trips, tabs, account, panels */
+.tabs button.active { color: var(--dm-accent); border-bottom-color: var(--dm-accent); }
+.tabs .count { background: #E8ECF3; }
+.next-card { border-color: #DDD6FE; background: #F5F3FF; }
+.avatar { background: var(--dm-gradient); }
+.page-title { font-size: 1.5rem; margin-bottom: 14px; }
+.account-head .page-title { font-size: 1.25rem; margin: 0; }
+.review { background: var(--dm-surface); border-radius: 10px; }
+.admin-actions, .settle, .calendar { background: var(--dm-surface); border: 1px solid #E4E8F0; }
+.bubble.mine { background: var(--dm-accent); }
+.thread-list { background: var(--dm-surface); }
+.calendar-grid .day.booked { background: var(--dm-accent); }
+.calendar-grid .day.today { outline-color: var(--dm-accent); }
+.legend.booked { background: var(--dm-accent); }
+.photo-slot.done label { border-color: var(--dm-success); }
+.stat strong { color: var(--dm-accent); }
+.bell-item.unread strong::before { color: var(--dm-accent); }
+.view-as-banner { background: #FEC84B; }
+.footer { color: var(--dm-gray); border-top: 1px solid var(--dm-border); margin-top: 24px; padding-top: 20px; }
+.page { margin-top: 28px; }
+.table th { color: #475467; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+
+@media (max-width: 767px) {
+  .topbar { padding: 8px 16px; }
+  .hero { padding: 32px 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* ---------- Menu: no boxes, a thin underline marks the current page ---------- */
+.topbar nav { gap: 4px; }
+.nav-link { position: relative; background: none; border-radius: 0; padding: 10px 12px; color: #344054; font-weight: 500; }
+.nav-link:hover { background: none; color: var(--dm-accent); }
+.nav-link.active { background: none; color: var(--dm-accent); }
+.nav-link.active::after {
+  content: ''; position: absolute; left: 12px; right: 12px; bottom: 2px; height: 2px;
+  background: var(--dm-accent); border-radius: 2px;
+}
+.nav-link.pill { padding: 8px 16px; border-radius: var(--dm-radius-btn); }
+.nav-link.pill:hover { color: var(--dm-white); }
+.nav-link.pill.active::after { display: none; }
+.topbar .bell > button:hover { background: none; color: var(--dm-accent); }
+
+/* Calmer, more even surfaces */
+.card { box-shadow: 0 1px 2px rgba(11, 30, 63, 0.05); }
+.vehicle-card:hover, .category:hover { box-shadow: 0 6px 20px rgba(11, 30, 63, 0.10); }
+.topbar { background: var(--dm-white); }
+
+/* ---------- Install card ---------- */
+.install-card { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+.install-card > div { flex: 1; min-width: 200px; }
+.install-card img { border-radius: 10px; flex: none; }
+.install-card p { margin: 2px 0 0; }
+.home .install-card { margin-bottom: 36px; }
+
+/* Installed app: respect phone notches and hide the footer chrome */
+@media (display-mode: standalone) {
+  body { padding-top: env(safe-area-inset-top); user-select: none; -webkit-user-select: none; }
+  input, textarea, .bubble, code { user-select: text; -webkit-user-select: text; }
+}
+
+/* ---------- Real car photos ---------- */
+.vehicle-card img, .detail-info > img, .booking-item img, .thumb { background: var(--dm-surface); }
+.vehicle-card img { object-position: center 60%; }
+.photo-credit { margin: 6px 0 0; font-size: 0.72rem; color: var(--dm-gray); }
+.photo-credit a { color: inherit; text-decoration: underline; }
+.category img { object-fit: contain; }
