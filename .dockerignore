@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+**/node_modules/
+frontend/
+.git/
+.vs/
+DriveMate.Server/App_Data/
+*.md

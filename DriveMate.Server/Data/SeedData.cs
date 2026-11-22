@@ -11,7 +11,10 @@ namespace DriveMate.Server.Data;
 /// </summary>
 public static class SeedData
 {
-    public const string DemoPassword = "DriveMate123!";
+    /// <summary>The password of every demo account. Local development uses this well-known default;
+    /// a published site must set its own with the Seed:DemoPassword setting (see InitializeAsync).</summary>
+    public const string DefaultDemoPassword = "DriveMate123!";
+    public static string DemoPassword { get; private set; } = DefaultDemoPassword;
 
     public static async Task InitializeAsync(IServiceProvider services)
     {
@@ -21,6 +24,20 @@ public static class SeedData
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(SeedData));
+        var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        var env = scope.ServiceProvider.GetRequiredService<IHostEnvironment>();
+
+        // Demo accounts and data: always on in Development; on a published site only when Seed:DemoData=true.
+        // Otherwise the public internet could log in with the password written in the README.
+        var seedDemo = env.IsDevelopment() || config.GetValue<bool>("Seed:DemoData");
+        if (seedDemo && !env.IsDevelopment())
+        {
+            var custom = config["Seed:DemoPassword"];
+            if (string.IsNullOrWhiteSpace(custom) || custom == DefaultDemoPassword || custom.Length < 10)
+                throw new InvalidOperationException(
+                    "Seed:DemoData is on, so Seed:DemoPassword must be set to your own password (10+ characters, not the README default).");
+        }
+        DemoPassword = config["Seed:DemoPassword"] is { Length: > 0 } p ? p : DefaultDemoPassword;
 
         // Creates the database file if missing and applies any migrations not yet applied.
         await db.Database.MigrateAsync();
@@ -29,6 +46,12 @@ public static class SeedData
         {
             if (!await roleManager.RoleExistsAsync(role))
                 await roleManager.CreateAsync(new IdentityRole(role));
+        }
+
+        if (!seedDemo)
+        {
+            logger.LogInformation("Demo data is off (Seed:DemoData). Database and roles are ready; no accounts were created.");
+            return;
         }
 
         if (await db.Users.AnyAsync())

@@ -1,0 +1,20 @@
+# Render "Blueprint": describes the DriveMate API so Render can create it from this repository.
+# Use: Render dashboard -> New -> Blueprint -> pick your GitHub repo.
+services:
+  - type: web
+    name: drivemate-api          # your API address becomes https://drivemate-api.onrender.com (or with a suffix if taken)
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free                   # free plan sleeps when idle and resets its disk; see README for a persistent disk
+    healthCheckPath: /api/bookings/plans
+    envVars:
+      - key: PORT
+        value: "8080"
+      - key: ASPNETCORE_HTTP_PORTS
+        value: "8080"
+      - key: Jwt__Key            # signs login tokens: Render makes a long random secret for you
+        generateValue: true
+      - key: Seed__DemoData      # true = create the demo accounts and cars (good for a school demo)
+        value: "true"
+      - key: Seed__DemoPassword  # YOU type this in Render when creating the service: password of all demo accounts
+        sync: false
