@@ -197,7 +197,7 @@ export function VehiclePage({ vehicleId, draft, onDraftChange, onBooked }: Props
           <div className="title-row">
             <h1 className="car-title">{vehicle.name}</h1>
             {user && (
-              <button type="button" className={`heart inline ${vehicle.isFavorite ? 'on' : ''}`} aria-pressed={vehicle.isFavorite}
+              <button type="button" className={`heart heart-inline ${vehicle.isFavorite ? 'on' : ''}`} aria-pressed={vehicle.isFavorite}
                 aria-label={vehicle.isFavorite ? 'Remove from favorites' : 'Save to favorites'} onClick={toggleFavorite}>
                 <Heart className="ico" fill={vehicle.isFavorite ? 'currentColor' : 'none'} aria-hidden="true" />
               </button>

@@ -82,7 +82,7 @@ export function DriverPage({ onInspect }: Props) {
           <input type="checkbox" checked={profile.isAvailable} onChange={(e) => saveProfile(e.target.checked, profile.pricePerDay)} />
           <span>{profile.isAvailable ? <><span className="dot on" /> Accepting trips</> : <><span className="dot" /> Offline</>}</span>
         </label>
-        <form className="row inline" onSubmit={(e) => { e.preventDefault(); saveProfile(profile.isAvailable, Number(price)); }}>
+        <form className="row row-inline" onSubmit={(e) => { e.preventDefault(); saveProfile(profile.isAvailable, Number(price)); }}>
           <label>Daily rate (₱)<input type="number" min={100} max={20000} value={price} onChange={(e) => setPrice(e.target.value)} /></label>
           <button className="ghost small">Save rate</button>
         </form>

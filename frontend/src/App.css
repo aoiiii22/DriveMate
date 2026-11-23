@@ -74,7 +74,7 @@ input:focus, select:focus { outline: 2px solid var(--dm-accent); outline-offset:
 .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .filters select { border-radius: var(--dm-radius-pill); }
 
-.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.car-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
 .vehicle-card {
   padding: 0; overflow: hidden; text-align: left; cursor: pointer; color: inherit;
   transition: transform 0.15s, box-shadow 0.15s;
@@ -184,7 +184,7 @@ textarea { padding: 10px 12px; border: 1px solid var(--dm-border); border-radius
 
 .driver-status { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .driver-status p { margin: 2px 0 0; }
-.row.inline { display: flex; align-items: flex-end; gap: 8px; }
+.row.row-inline { display: flex; align-items: flex-end; gap: 8px; }
 .switch span { font-weight: 600; }
 
 .calendar { margin-top: 12px; padding: 12px; background: var(--dm-surface); border-radius: 12px; }
@@ -218,7 +218,7 @@ textarea { padding: 10px 12px; border: 1px solid var(--dm-border); border-radius
   font-size: 1.2rem; color: var(--dm-gray); line-height: 1;
 }
 .heart.on { color: var(--dm-danger); }
-.heart.inline { position: static; flex: none; }
+.heart.heart-inline { position: static; flex: none; }
 .title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 16px; }
 .title-row h2 { margin: 0; }
 

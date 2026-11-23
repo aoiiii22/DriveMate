@@ -116,7 +116,7 @@ export function HomePage() {
               <h2 className="section-title">Top-rated cars</h2>
               <Link to={searchLink({ sort: 'rating' })}>See all →</Link>
             </div>
-            <div className="grid">
+            <div className="car-grid">
               {topCars.map((v) => <VehicleCard key={v.id} vehicle={v} to={carLink(v.id, start, end)} />)}
             </div>
           </section>

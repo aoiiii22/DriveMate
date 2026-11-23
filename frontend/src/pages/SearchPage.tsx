@@ -138,7 +138,7 @@ export function SearchPage() {
         </section>
       )}
 
-      <div className="grid">
+      <div className="car-grid">
         {vehicles === null && !error && !datesBad && Array.from({ length: 6 }, (_, i) => <VehicleCardSkeleton key={i} />)}
         {!datesBad && vehicles?.map((v) => (
           <VehicleCard key={v.id} vehicle={v} to={carLink(v.id, filters.start, filters.end, withDriver)}

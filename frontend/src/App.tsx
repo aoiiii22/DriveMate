@@ -1,9 +1,11 @@
 import { useState, type ReactNode } from 'react';
-import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
-import './App.css';
-import './polish.css'; // keep after App.css: it overrides earlier rules
+import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
+import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { useAuth } from './auth';
-import { NotificationBell } from './components/NotificationBell';
+import { BottomTabs } from './components/shell/BottomTabs';
+import { SiteFooter } from './components/shell/SiteFooter';
+import { SiteHeader } from './components/shell/SiteHeader';
+import { TooltipProvider } from './components/ui/tooltip';
 import { AccountPage } from './pages/AccountPage';
 import { AdminPage } from './pages/AdminPage';
 import { AlertsPage } from './pages/AlertsPage';
@@ -21,17 +23,22 @@ import { SuperAdminPage } from './pages/SuperAdminPage';
 import { VehiclePage } from './pages/VehiclePage';
 import { VerifyPage } from './pages/VerifyPage';
 import { emptyDraft, type BookingDraft, type InspectionStage, type InspectionTarget, type User } from './types';
-import { Bell, Briefcase, CircleUser, Eye, LayoutDashboard, Search } from 'lucide-react';
-import { Logo } from './components/Logo';
-import { PartnerMenu } from './components/PartnerMenu';
+
+/** Pages that share one screen get one key, so switching between them keeps their own animation (no fade). */
+function transitionKey(pathname: string): string {
+  if (pathname === '/login' || pathname === '/register') return 'auth';
+  if (pathname.startsWith('/partner')) return 'partner';
+  return pathname;
+}
 
 /**
- * The app shell: top bar, the page for the current URL, and (on phones) a bottom tab bar.
- * Each <Route> maps a URL to a page, e.g. /cars/4 → VehiclePage for car 4.
+ * The app shell: top bar, the page for the current URL (with a soft fade between pages), footer,
+ * and (on phones) a bottom tab bar. Each <Route> maps a URL to a page, e.g. /cars/4 → VehiclePage for car 4.
  */
 function App() {
-  const { user, loading, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   // Half-filled booking forms, one per car, so going to the login page and back keeps them.
   const [drafts, setDrafts] = useState<Record<number, BookingDraft>>({});
 
@@ -40,115 +47,52 @@ function App() {
     navigate(`/inspect/${target.id}/${stage}`, { state: { target } });
 
   return (
-    <>
-      <a href="#main" className="skip-link">Skip to content</a>
-      <ViewAsBanner />
-      <header className="topbar">
-        <Link className="brand" to="/"><Logo />Drive<span>Mate</span></Link>
-        <nav aria-label="Main">
-          {user && <NavLink to="/trips" className="nav-link desktop-only">My trips</NavLink>}
-          {user && dashboardLink(user) && <NavLink to={dashboardLink(user)!.to} className="nav-link desktop-only">{dashboardLink(user)!.label}</NavLink>}
-          {(!user || user.role === 'Customer') && <PartnerMenu />}
-          {user && <NotificationBell onOpen={(page) => navigate(pageToPath(page))} />}
-          {!loading && !user && (
-            <>
-              <Link to="/login" className="nav-link">Log in</Link>
-              <Link to="/register" className="nav-link pill">Sign up</Link>
-            </>
-          )}
-          {user && <NavLink to="/account" className="nav-link desktop-only"><CircleUser className="ico" aria-hidden="true" /> {user.fullName.split(' ')[0]}</NavLink>}
-        </nav>
-      </header>
+    // reducedMotion="user": people who turned on "reduce motion" in their device settings get no movement.
+    <MotionConfig reducedMotion="user">
+      <TooltipProvider delayDuration={200}>
+        <a href="#main" className="skip-link">Skip to content</a>
+        <SiteHeader />
 
-      <div id="main">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/cars/:id" element={<CarRoute drafts={drafts} setDrafts={setDrafts} />} />
-          <Route path="/login" element={<AuthPage mode="login" />} />
-          <Route path="/register" element={<AuthPage mode="register" />} />
+        <div id="main">
+          {/* Opacity-only fade: a transform here would break "position: fixed" bars inside pages. */}
+          <AnimatePresence mode="wait" initial={false} onExitComplete={() => window.scrollTo(0, 0)}>
+            <motion.div
+              key={transitionKey(location.pathname)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
+            >
+              <Routes location={location}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/cars/:id" element={<CarRoute drafts={drafts} setDrafts={setDrafts} />} />
+                <Route path="/login" element={<AuthPage mode="login" />} />
+                <Route path="/register" element={<AuthPage mode="register" />} />
 
-          <Route path="/trips" element={<RequireAuth><BookingsPage onInspect={openInspection} /></RequireAuth>} />
-          <Route path="/pay/:id" element={<RequireAuth><PaymentPage /></RequireAuth>} />
-          <Route path="/inspect/:id/:stage" element={<RequireAuth><InspectionRoute /></RequireAuth>} />
-          <Route path="/verify" element={<RequireAuth><VerifyPage /></RequireAuth>} />
-          <Route path="/partner" element={<PartnerRedirect />} />
-          <Route path="/partner/:kind" element={<PartnerPage />} />
-          <Route path="/alerts" element={<RequireAuth><AlertsPage /></RequireAuth>} />
-          <Route path="/account" element={<RequireAuth><AccountPage onLogout={() => { logout(); navigate('/'); }} /></RequireAuth>} />
-          <Route path="/owner" element={<RequireAuth role="Owner"><OwnerPage onInspect={openInspection} /></RequireAuth>} />
-          <Route path="/driver" element={<RequireAuth role="Driver"><DriverPage onInspect={openInspection} /></RequireAuth>} />
-          <Route path="/admin" element={<RequireAuth role={['Admin', 'SuperAdmin']}><AdminPage /></RequireAuth>} />
-          <Route path="/superadmin" element={<RequireAuth role="SuperAdmin"><SuperAdminPage /></RequireAuth>} />
-          <Route path="/credits" element={<CreditsPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
-
-      <footer className="footer">
-        <div className="footer-inner">
-          <div className="footer-brand">
-            <Link className="brand" to="/"><Logo />Drive<span>Mate</span></Link>
-            <p>Your Ride, Your Choice.</p>
-          </div>
-          <div>
-            <h4>Ride</h4>
-            <Link to="/search">Find a ride</Link>
-            <Link to="/search?driver=1">Book a driver</Link>
-            <Link to="/trips">My trips</Link>
-          </div>
-          <div>
-            <h4>Earn</h4>
-            <Link to="/partner/owner">List your car</Link>
-            <Link to="/partner/drive">Drive for us</Link>
-          </div>
-          <div>
-            <h4>Account</h4>
-            <Link to="/login">Log in</Link>
-            <Link to="/register">Sign up</Link>
-            <Link to="/credits">Photo credits</Link>
-          </div>
+                <Route path="/trips" element={<RequireAuth><BookingsPage onInspect={openInspection} /></RequireAuth>} />
+                <Route path="/pay/:id" element={<RequireAuth><PaymentPage /></RequireAuth>} />
+                <Route path="/inspect/:id/:stage" element={<RequireAuth><InspectionRoute /></RequireAuth>} />
+                <Route path="/verify" element={<RequireAuth><VerifyPage /></RequireAuth>} />
+                <Route path="/partner" element={<PartnerRedirect />} />
+                <Route path="/partner/:kind" element={<PartnerPage />} />
+                <Route path="/alerts" element={<RequireAuth><AlertsPage /></RequireAuth>} />
+                <Route path="/account" element={<RequireAuth><AccountPage onLogout={() => { logout(); navigate('/'); }} /></RequireAuth>} />
+                <Route path="/owner" element={<RequireAuth role="Owner"><OwnerPage onInspect={openInspection} /></RequireAuth>} />
+                <Route path="/driver" element={<RequireAuth role="Driver"><DriverPage onInspect={openInspection} /></RequireAuth>} />
+                <Route path="/admin" element={<RequireAuth role={['Admin', 'SuperAdmin']}><AdminPage /></RequireAuth>} />
+                <Route path="/superadmin" element={<RequireAuth role="SuperAdmin"><SuperAdminPage /></RequireAuth>} />
+                <Route path="/credits" element={<CreditsPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </motion.div>
+          </AnimatePresence>
         </div>
-        <p className="footer-legal">© {new Date().getFullYear()} DriveMate</p>
-      </footer>
-      <BottomTabs user={user} />
-    </>
-  );
-}
 
-/** The owner/driver/admin dashboard for this user, if any. */
-function dashboardLink(user: User): { to: string; label: string } | null {
-  switch (user.role) {
-    case 'Owner': return { to: '/owner', label: 'Owner dashboard' };
-    case 'Driver': return { to: '/driver', label: 'Driver dashboard' };
-    case 'Admin': return { to: '/admin', label: 'Admin' };
-    case 'SuperAdmin': return { to: '/superadmin', label: 'Super admin' };
-    default: return null;
-  }
-}
-
-/** Turns a notification's "page" (sent by the server) into a URL. */
-function pageToPath(page: string): string {
-  return ['owner', 'driver', 'verify', 'partner', 'admin'].includes(page) ? `/${page}` : '/trips';
-}
-
-/** Phone-only tab bar, like real apps. Hidden on wide screens by CSS. */
-function BottomTabs({ user }: { user: User | null }) {
-  const dash = user ? dashboardLink(user) : null;
-  return (
-    <nav className="bottom-tabs" aria-label="Main">
-      <NavLink to="/search"><Search className="ico" aria-hidden="true" />Explore</NavLink>
-      {user ? (
-        <>
-          <NavLink to="/trips"><Briefcase className="ico" aria-hidden="true" />Trips</NavLink>
-          {dash && <NavLink to={dash.to}><LayoutDashboard className="ico" aria-hidden="true" />{user.role === 'Admin' || user.role === 'SuperAdmin' ? 'Admin' : 'Dashboard'}</NavLink>}
-          <NavLink to="/alerts"><Bell className="ico" aria-hidden="true" />Alerts</NavLink>
-          <NavLink to="/account"><CircleUser className="ico" aria-hidden="true" />Account</NavLink>
-        </>
-      ) : (
-        <NavLink to="/login"><CircleUser className="ico" aria-hidden="true" />Log in</NavLink>
-      )}
-    </nav>
+        <SiteFooter />
+        <BottomTabs />
+      </TooltipProvider>
+    </MotionConfig>
   );
 }
 
@@ -163,21 +107,6 @@ function RequireAuth({ children, role }: { children: ReactNode; role?: User['rol
     return <main className="page"><p className="card empty">This page is for {allowed.join(' / ').toLowerCase()} accounts.</p></main>;
   }
   return children;
-}
-
-/** Always visible while a super admin is viewing the app as someone else. */
-function ViewAsBanner() {
-  const { user, stopViewAs } = useAuth();
-  const navigate = useNavigate();
-  if (!user?.impersonatedBy) return null;
-  return (
-    <div className="view-as-banner" role="status">
-      <span><Eye className="ico" aria-hidden="true" /> You are viewing DriveMate as <strong>{user.fullName}</strong> ({user.role}). Everything you do happens on their account.</span>
-      <button className="ghost small" onClick={async () => { await stopViewAs(); navigate('/superadmin'); }}>
-        Return to super admin
-      </button>
-    </div>
-  );
 }
 
 function CarRoute({ drafts, setDrafts }: {

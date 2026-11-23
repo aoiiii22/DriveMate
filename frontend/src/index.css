@@ -1,44 +1,102 @@
 /* =========================================================
-   DriveMate global styles + design tokens.
-   CSS custom properties (--name) are variables: change a colour
-   here and it updates everywhere it's used.
+   DriveMate styles: Tailwind CSS v4 + shadcn/ui tokens.
 
-   Look: brand purple and pink on navy text, with small corners.
-
+   Cascade layers decide who wins, regardless of selector strength:
+     theme → legacy → base → components → utilities
+   - legacy: the old hand-written CSS. Pages that haven't been redesigned yet still use it.
+   - base: a scoped reset that only applies inside elements with class "tw" (the new UI),
+     so new components aren't affected by old element rules like `label {}` or `input {}`.
+   - utilities: Tailwind classes always win.
+   When every page is redesigned, the legacy layer is deleted and this becomes plain Tailwind.
    ========================================================= */
+@layer theme, legacy, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "tw-animate-css";
+
+@import "./legacy-base.css" layer(legacy);
+@import "./App.css" layer(legacy);
+@import "./polish.css" layer(legacy);
+
+/* ---------- Design tokens (shadcn/ui names, DriveMate colours, no gradients) ---------- */
 :root {
-  --dm-navy: #0B1E3F;        /* headings, hero, strong text */
-  --dm-navy-2: #12336B;
-  --dm-accent: #7C3AED;      /* brand purple: buttons, links, selected */
-  --dm-accent-dark: #6D28D9;
-  --dm-danger: #DB2777;      /* brand pink: errors, hearts, badges */
-  --dm-success: #067647;
-  --dm-surface: #F5F3FF;     /* page background and soft panels */
-  --dm-border: #E2E4EC;
-  --dm-gray: #5A6478;
-  --dm-white: #FFFFFF;
+  --radius: 0.75rem;
 
-  --dm-radius-card: 12px;
-  --dm-radius-btn: 10px;
-  --dm-radius-pill: 999px;   /* only for small badges and chips */
-  --dm-shadow: 0 1px 2px rgba(11, 30, 63, 0.06), 0 4px 14px rgba(11, 30, 63, 0.06);
-  --dm-shadow-lg: 0 12px 40px rgba(124, 58, 237, 0.18);
+  --background: #ffffff;
+  --foreground: #0b1e3f;          /* navy text */
+  --card: #ffffff;
+  --card-foreground: #0b1e3f;
+  --popover: #ffffff;
+  --popover-foreground: #0b1e3f;
 
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 16px;
-  line-height: 1.55;
-  color: var(--dm-navy);
-  background: var(--dm-surface);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  --primary: #7c3aed;             /* brand purple: main actions */
+  --primary-foreground: #ffffff;
+  --brand-pink: #db2777;          /* brand pink: highlights, badges, hearts */
+  --brand-pink-foreground: #ffffff;
+
+  --secondary: #f4f4f6;
+  --secondary-foreground: #0b1e3f;
+  --muted: #f7f7f9;               /* light grey sections */
+  --muted-foreground: #5a6478;
+  --accent: #f5f3ff;              /* soft purple hover background */
+  --accent-foreground: #5b21b6;
+  --destructive: #d92d20;
+  --success: #067647;
+
+  --border: #e4e7ec;
+  --input: #d0d5dd;
+  --ring: #7c3aed;
 }
 
-*, *::before, *::after { box-sizing: border-box; }
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
-body { margin: 0; min-height: 100vh; }
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-brand-pink: var(--brand-pink);
+  --color-brand-pink-foreground: var(--brand-pink-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 
-h1, h2, h3, h4 { font-weight: 650; margin: 0; line-height: 1.25; letter-spacing: -0.01em; }
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+}
 
-img { max-width: 100%; display: block; }
-
-button, input, select, textarea { font: inherit; }
+/* ---------- Scoped reset for the new UI (a trimmed copy of Tailwind's "preflight") ---------- */
+@layer base {
+  :where(.tw, .tw *), :where(.tw, .tw *)::before, :where(.tw, .tw *)::after {
+    box-sizing: border-box; margin: 0; padding: 0; border: 0 solid var(--border);
+  }
+  :where(.tw) :where(h1, h2, h3, h4, h5, h6) { font-size: inherit; font-weight: inherit; line-height: inherit; letter-spacing: inherit; }
+  :where(.tw) :where(ol, ul, menu) { list-style: none; }
+  :where(.tw) :where(a) { color: inherit; text-decoration: inherit; }
+  :where(.tw) :where(b, strong) { font-weight: 600; }
+  :where(.tw) :where(img, svg, video) { display: block; vertical-align: middle; }
+  :where(.tw) :where(img, video) { max-width: 100%; height: auto; }
+  :where(.tw) :where(button, input, select, textarea) {
+    font: inherit; letter-spacing: inherit; color: inherit; background-color: transparent; border-radius: 0; opacity: 1;
+  }
+  :where(.tw) :where(button, [role="button"]) { cursor: pointer; }
+  :where(.tw) :where(:disabled) { cursor: default; }
+  :where(.tw) :where(label) { display: inline; font-size: inherit; font-weight: inherit; color: inherit; }
+  :where(.tw) :where(*:focus-visible) { outline: 2px solid var(--ring); outline-offset: 2px; }
+}
