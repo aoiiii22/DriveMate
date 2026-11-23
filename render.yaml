@@ -2,7 +2,7 @@
 # Use: Render dashboard -> New -> Blueprint -> pick your GitHub repo.
 services:
   - type: web
-    name: drivemate-api          # your API address becomes https://drivemate-api.onrender.com (or with a suffix if taken)
+    name: drivemate-api          # Render adds a suffix if the name is taken; this project's API is https://drivemate-api-1h7e.onrender.com
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: free                   # free plan sleeps when idle and resets its disk; see README for a persistent disk
