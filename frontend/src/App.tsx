@@ -14,7 +14,7 @@ import { DriverPage } from './pages/DriverPage';
 import { HomePage } from './pages/HomePage';
 import { InspectionPage } from './pages/InspectionPage';
 import { OwnerPage } from './pages/OwnerPage';
-import { PartnerPage } from './pages/PartnerPage';
+import { PartnerPage, PartnerRedirect } from './pages/PartnerPage';
 import { PaymentPage } from './pages/PaymentPage';
 import { SearchPage } from './pages/SearchPage';
 import { SuperAdminPage } from './pages/SuperAdminPage';
@@ -23,6 +23,7 @@ import { VerifyPage } from './pages/VerifyPage';
 import { emptyDraft, type BookingDraft, type InspectionStage, type InspectionTarget, type User } from './types';
 import { Bell, Briefcase, CircleUser, Eye, LayoutDashboard, Search } from 'lucide-react';
 import { Logo } from './components/Logo';
+import { PartnerMenu } from './components/PartnerMenu';
 
 /**
  * The app shell: top bar, the page for the current URL, and (on phones) a bottom tab bar.
@@ -48,7 +49,7 @@ function App() {
           <NavLink to="/search" className="nav-link desktop-only">Find a ride</NavLink>
           {user && <NavLink to="/trips" className="nav-link desktop-only">My trips</NavLink>}
           {user && dashboardLink(user) && <NavLink to={dashboardLink(user)!.to} className="nav-link desktop-only">{dashboardLink(user)!.label}</NavLink>}
-          {user?.role === 'Customer' && <NavLink to="/partner" className="nav-link desktop-only">Become a partner</NavLink>}
+          {(!user || user.role === 'Customer') && <PartnerMenu />}
           {user && <NotificationBell onOpen={(page) => navigate(pageToPath(page))} />}
           {!loading && !user && (
             <>
@@ -72,7 +73,8 @@ function App() {
           <Route path="/pay/:id" element={<RequireAuth><PaymentPage /></RequireAuth>} />
           <Route path="/inspect/:id/:stage" element={<RequireAuth><InspectionRoute /></RequireAuth>} />
           <Route path="/verify" element={<RequireAuth><VerifyPage /></RequireAuth>} />
-          <Route path="/partner" element={<RequireAuth><PartnerPage /></RequireAuth>} />
+          <Route path="/partner" element={<PartnerRedirect />} />
+          <Route path="/partner/:kind" element={<PartnerPage />} />
           <Route path="/alerts" element={<RequireAuth><AlertsPage /></RequireAuth>} />
           <Route path="/account" element={<RequireAuth><AccountPage onLogout={() => { logout(); navigate('/'); }} /></RequireAuth>} />
           <Route path="/owner" element={<RequireAuth role="Owner"><OwnerPage onInspect={openInspection} /></RequireAuth>} />
@@ -84,7 +86,32 @@ function App() {
         </Routes>
       </div>
 
-      <footer className="footer">DriveMate · Your Ride, Your Choice. · <Link to="/credits">Photo credits</Link></footer>
+      <footer className="footer">
+        <div className="footer-inner">
+          <div className="footer-brand">
+            <Link className="brand" to="/"><Logo />Drive<span>Mate</span></Link>
+            <p>Your Ride, Your Choice.</p>
+          </div>
+          <div>
+            <h4>Ride</h4>
+            <Link to="/search">Find a ride</Link>
+            <Link to="/search?driver=1">Book a driver</Link>
+            <Link to="/trips">My trips</Link>
+          </div>
+          <div>
+            <h4>Earn</h4>
+            <Link to="/partner/owner">List your car</Link>
+            <Link to="/partner/drive">Drive for us</Link>
+          </div>
+          <div>
+            <h4>Account</h4>
+            <Link to="/login">Log in</Link>
+            <Link to="/register">Sign up</Link>
+            <Link to="/credits">Photo credits</Link>
+          </div>
+        </div>
+        <p className="footer-legal">© {new Date().getFullYear()} DriveMate</p>
+      </footer>
       <BottomTabs user={user} />
     </>
   );

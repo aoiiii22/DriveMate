@@ -6,7 +6,7 @@ import { VehicleCard } from '../components/VehicleCard';
 import { toDateInput } from '../format';
 import { carLink, defaultDates, filtersToParams, searchLink } from '../search';
 import type { VehicleSummary } from '../types';
-import { BadgePercent, Camera, Car, IdCard, ShieldCheck, UserRound } from 'lucide-react';
+import { BadgePercent, Camera, Car, IdCard, ShieldCheck, UserRound, Wallet } from 'lucide-react';
 
 const categories = [
   { type: 'Sedan', label: 'Sedans', hint: 'City trips', img: '/images/vehicles/sedan.svg' },
@@ -33,27 +33,40 @@ export function HomePage() {
 
   return (
     <>
-      <section className="hero home-hero">
-        <h1>Your Ride, Your Choice.</h1>
-        <p>Rent a car from trusted local owners. Drive yourself or book a professional driver.</p>
-
-        <form className="search-bar card big-search" onSubmit={search} role="search">
-          <label>Where?<input placeholder="City, e.g. Makati" value={location} onChange={(e) => setLocation(e.target.value)} /></label>
-          <label>Pick-up<input type="date" required min={toDateInput(new Date())} value={start}
-            onChange={(e) => setDates({ start: e.target.value, end })} /></label>
-          <label>Return<input type="date" required min={start} value={end}
-            onChange={(e) => setDates({ start, end: e.target.value })} /></label>
-          <button className="primary">Search cars</button>
-          <div className="toggle mini" role="radiogroup" aria-label="Driving option">
-            <button type="button" className={!withDriver ? 'active' : ''} onClick={() => setWithDriver(false)}><Car className="ico" aria-hidden="true" /> Self-drive</button>
-            <button type="button" className={withDriver ? 'active' : ''} onClick={() => setWithDriver(true)}><UserRound className="ico" aria-hidden="true" /> With driver</button>
+      <section className="g-hero">
+        <div className="g-hero-inner">
+          <div className="g-hero-copy">
+            <h1>Your ride.<br /><span>Your choice.</span></h1>
+            <p>Rent a car from trusted local owners. Drive yourself or book a professional driver, all in one app.</p>
+            <div className="g-hero-actions">
+              <Link className="primary big" to="/search">Find a car</Link>
+              <Link className="ghost big" to="/partner">Become a partner</Link>
+            </div>
           </div>
-        </form>
+
+          <form className="g-search" onSubmit={search} role="search">
+            <h2>Book your ride</h2>
+            <div className="toggle" role="radiogroup" aria-label="Driving option">
+              <button type="button" className={!withDriver ? 'active' : ''} onClick={() => setWithDriver(false)}><Car className="ico" aria-hidden="true" /> Self-drive</button>
+              <button type="button" className={withDriver ? 'active' : ''} onClick={() => setWithDriver(true)}><UserRound className="ico" aria-hidden="true" /> With driver</button>
+            </div>
+            <label>Where?<input placeholder="City, e.g. Makati" value={location} onChange={(e) => setLocation(e.target.value)} /></label>
+            <div className="g-search-dates">
+              <label>Pick-up<input type="date" required min={toDateInput(new Date())} value={start}
+                onChange={(e) => setDates({ start: e.target.value, end })} /></label>
+              <label>Return<input type="date" required min={start} value={end}
+                onChange={(e) => setDates({ start, end: e.target.value })} /></label>
+            </div>
+            <button className="primary big">Search cars</button>
+          </form>
+        </div>
       </section>
 
       <main className="page home">
         <section>
-          <h2 className="section-title">Browse by type</h2>
+          <h2 className="section-title big-title">One platform. Every kind of ride.</h2>
+
+          <h3 className="group-title">Rent a car</h3>
           <div className="category-grid">
             {categories.map((c) => (
               <Link key={c.type} to={searchLink({ type: c.type })} className="category card">
@@ -62,6 +75,25 @@ export function HomePage() {
                 <span className="muted small-text">{c.hint}</span>
               </Link>
             ))}
+            <Link to="/search?driver=1" className="category card">
+              <UserRound className="tile-icon" aria-hidden="true" />
+              <strong>With a driver</strong>
+              <span className="muted small-text">Sit back, we drive</span>
+            </Link>
+          </div>
+
+          <h3 className="group-title">Earn with DriveMate</h3>
+          <div className="category-grid">
+            <Link to="/partner/owner" className="category card">
+              <Wallet className="tile-icon" aria-hidden="true" />
+              <strong>List your car</strong>
+              <span className="muted small-text">Keep 85% of every booking</span>
+            </Link>
+            <Link to="/partner/drive" className="category card">
+              <IdCard className="tile-icon" aria-hidden="true" />
+              <strong>Drive for us</strong>
+              <span className="muted small-text">Become a DriveMate driver</span>
+            </Link>
           </div>
         </section>
 

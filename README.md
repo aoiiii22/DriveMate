@@ -172,7 +172,7 @@ DriveMate.slnx
 
 ## Design system
 
-- **Look:** brand purple and pink (gradient buttons), navy text, 10-12 px corners, quiet shadows, Inter typeface.
+- **Look:** brand purple and pink (solid colours, no gradients), navy text, 10-12 px corners, quiet shadows, Inter typeface.
   All colours are variables at the top of `frontend/src/index.css` (`--dm-navy`, `--dm-accent`, `--dm-danger`, ...).
   `frontend/src/polish.css` is the final style layer and is loaded after `App.css`.
 - **Icons:** [Lucide](https://lucide.dev) via `lucide-react` (1.66.0). Use `<Star className="ico" aria-hidden="true" />`;
