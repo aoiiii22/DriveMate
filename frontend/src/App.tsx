@@ -46,7 +46,6 @@ function App() {
       <header className="topbar">
         <Link className="brand" to="/"><Logo />Drive<span>Mate</span></Link>
         <nav aria-label="Main">
-          <NavLink to="/search" className="nav-link desktop-only">Find a ride</NavLink>
           {user && <NavLink to="/trips" className="nav-link desktop-only">My trips</NavLink>}
           {user && dashboardLink(user) && <NavLink to={dashboardLink(user)!.to} className="nav-link desktop-only">{dashboardLink(user)!.label}</NavLink>}
           {(!user || user.role === 'Customer') && <PartnerMenu />}

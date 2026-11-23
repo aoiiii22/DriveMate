@@ -44,20 +44,17 @@ export function HomePage() {
             </div>
           </div>
 
-          <form className="g-search" onSubmit={search} role="search">
-            <h2>Book your ride</h2>
-            <div className="toggle" role="radiogroup" aria-label="Driving option">
+          <form className="search-bar card big-search" onSubmit={search} role="search">
+            <label>Where?<input placeholder="City, e.g. Makati" value={location} onChange={(e) => setLocation(e.target.value)} /></label>
+            <label>Pick-up<input type="date" required min={toDateInput(new Date())} value={start}
+              onChange={(e) => setDates({ start: e.target.value, end })} /></label>
+            <label>Return<input type="date" required min={start} value={end}
+              onChange={(e) => setDates({ start, end: e.target.value })} /></label>
+            <button className="primary">Search cars</button>
+            <div className="toggle mini" role="radiogroup" aria-label="Driving option">
               <button type="button" className={!withDriver ? 'active' : ''} onClick={() => setWithDriver(false)}><Car className="ico" aria-hidden="true" /> Self-drive</button>
               <button type="button" className={withDriver ? 'active' : ''} onClick={() => setWithDriver(true)}><UserRound className="ico" aria-hidden="true" /> With driver</button>
             </div>
-            <label>Where?<input placeholder="City, e.g. Makati" value={location} onChange={(e) => setLocation(e.target.value)} /></label>
-            <div className="g-search-dates">
-              <label>Pick-up<input type="date" required min={toDateInput(new Date())} value={start}
-                onChange={(e) => setDates({ start: e.target.value, end })} /></label>
-              <label>Return<input type="date" required min={start} value={end}
-                onChange={(e) => setDates({ start, end: e.target.value })} /></label>
-            </div>
-            <button className="primary big">Search cars</button>
           </form>
         </div>
       </section>

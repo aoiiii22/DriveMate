@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
-import { Eye, EyeOff, Lock, Mail, Phone, User } from 'lucide-react';
+import { Eye, EyeOff, Info, Lock, Mail, User } from 'lucide-react';
 import { useAuth } from '../auth';
 import { useToast } from '../toast';
 import { Logo } from '../components/Logo';
@@ -21,7 +21,6 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +32,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
     setError(null);
     try {
       if (mode === 'login') await login(email, password);
-      else await register(fullName, email, phone, password);
+      else await register(fullName, email, '', password);
       toast(mode === 'login' ? 'Welcome back!' : 'Account created. Welcome to DriveMate!');
       navigate(next, { replace: true });
     } catch (err) {
@@ -44,19 +43,33 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
   }
 
   const nextQuery = next !== '/' ? `?next=${encodeURIComponent(next)}` : '';
-  const passwordField = (
-    <div className="auth-field">
-      <Lock className="ico" aria-hidden="true" />
-      <input type={showPassword ? 'text' : 'password'} required placeholder="Password" aria-label="Password"
-        minLength={mode === 'register' ? 8 : undefined}
-        autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-        value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button type="button" className="auth-eye" onClick={() => setShowPassword(!showPassword)}
-        aria-label={showPassword ? 'Hide password' : 'Show password'}>
-        {showPassword ? <EyeOff className="ico" aria-hidden="true" /> : <Eye className="ico" aria-hidden="true" />}
-      </button>
-    </div>
-  );
+  /** The sign-up version has an (i) tooltip with the password rule; the log-in version doesn't need it. */
+  const passwordField = (forSignUp: boolean) => {
+    const field = (
+      <div className="auth-field">
+        <Lock className="ico" aria-hidden="true" />
+        <input type={showPassword ? 'text' : 'password'} required placeholder="Password" aria-label="Password"
+          minLength={forSignUp ? 8 : undefined} aria-describedby={forSignUp ? 'password-tip' : undefined}
+          autoComplete={forSignUp ? 'new-password' : 'current-password'}
+          value={password} onChange={(e) => setPassword(e.target.value)} />
+        <button type="button" className="auth-eye" onClick={() => setShowPassword(!showPassword)}
+          aria-label={showPassword ? 'Hide password' : 'Show password'}>
+          {showPassword ? <Eye className="ico" aria-hidden="true" /> : <EyeOff className="ico" aria-hidden="true" />}
+        </button>
+      </div>
+    );
+    if (!forSignUp) return field;
+    // Sign up: the (i) tooltip sits outside the field, to its right.
+    return (
+      <div className="auth-row">
+        {field}
+        <span className="auth-tip">
+          <button type="button" className="auth-info" aria-label="Password rules"><Info className="ico" aria-hidden="true" /></button>
+          <span id="password-tip" role="tooltip">Use at least 8 characters.</span>
+        </span>
+      </div>
+    );
+  };
   const emailField = (
     <div className="auth-field">
       <Mail className="ico" aria-hidden="true" />
@@ -74,7 +87,7 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
           <h1>Log in</h1>
           {hint}
           {emailField}
-          {passwordField}
+          {passwordField(false)}
           {mode === 'login' && error && <p className="error" role="alert">{error}</p>}
           <button className="primary" disabled={saving}>{saving ? 'Please wait…' : 'Log in'}</button>
           <p className="hint">Demo: customer@drivemate.local (password in README)</p>
@@ -90,18 +103,19 @@ export function AuthPage({ mode }: { mode: 'login' | 'register' }) {
               value={fullName} onChange={(e) => setFullName(e.target.value)} />
           </div>
           {emailField}
-          <div className="auth-field">
-            <Phone className="ico" aria-hidden="true" />
-            <input type="tel" placeholder="Mobile number (optional)" aria-label="Mobile number (optional)" autoComplete="tel"
-              value={phone} onChange={(e) => setPhone(e.target.value)} />
-          </div>
-          {passwordField}
-          <p className="hint">Password: at least 8 characters.</p>
+          {passwordField(true)}
           {mode === 'register' && error && <p className="error" role="alert">{error}</p>}
           <button className="primary" disabled={saving}>{saving ? 'Please wait…' : 'Sign up'}</button>
         </form>
 
         <aside className="auth-panel">
+          {/* Steering wheel: turns when the panel slides between log in and sign up (see .panel-wheel in polish.css) */}
+          <svg className="panel-wheel" viewBox="0 0 60 60" aria-hidden="true">
+            <circle cx="30" cy="30" r="24" fill="none" stroke="#fff" strokeWidth="5" />
+            <path d="M30 30 11 19M30 30 49 19M30 30V52" stroke="#fff" strokeWidth="4.5" strokeLinecap="round" />
+            <circle cx="30" cy="30" r="5.5" fill="#fff" />
+            <rect x="27" y="3.5" width="6" height="10" rx="3" fill="#DB2777" />
+          </svg>
           <div className="panel-text for-login">
             <h2>Hello, Welcome!</h2>
             <p>Don't have an account?</p>

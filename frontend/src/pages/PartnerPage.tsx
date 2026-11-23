@@ -17,6 +17,8 @@ const content: Record<Kind, {
   requirements: string[];
   faqs: { q: string; a: string }[];
   cta: string;
+  benefits: { title: string; bullets: string[] }[];
+  photo: string; photoAlt: string; band: string; bandAlt: string;
 }> = {
   drive: {
     type: 'Driver',
@@ -46,6 +48,12 @@ const content: Record<Kind, {
       { q: 'What if my application is rejected?', a: 'You will see the reason on this page, so you know what to fix.' },
     ],
     cta: 'Start your journey as a driver-partner.',
+    benefits: [
+      { title: 'Take control of your earnings', bullets: ['Choose your own daily rate when you apply', 'Keep 85% of every booking', 'Your payout is fixed when the booking is made'] },
+      { title: 'Everything in one place', bullets: ['See your bookings and message customers', 'Take check-in photos at hand-over', 'Get notified about new bookings and track your earnings'] },
+    ],
+    photo: '/images/cars/toyota-hiace-commuter.jpg', photoAlt: 'A Toyota HiAce van ready for passengers',
+    band: '/images/cars/toyota-vios.jpg', bandAlt: 'A Toyota Vios sedan',
   },
   owner: {
     type: 'Owner',
@@ -75,6 +83,12 @@ const content: Record<Kind, {
       { q: 'Can I block dates when I need the car?', a: 'Yes. Your owner dashboard has a calendar where you block dates. Blocked dates cannot be booked.' },
     ],
     cta: 'Start your journey as a car owner.',
+    benefits: [
+      { title: 'Earn from your car', bullets: ['Keep 85% of every booking', 'Your payout is fixed when the booking is made', 'Block the dates you need the car yourself'] },
+      { title: 'Rent with confidence', bullets: ['Renters upload a licence and ID that an admin approves before they can self-drive', 'Photos at pick-up and return', 'A refundable security deposit, part of which you can keep after the return with a reason'] },
+    ],
+    photo: '/images/cars/toyota-fortuner.jpg', photoAlt: 'A Toyota Fortuner SUV available to rent',
+    band: '/images/cars/ford-everest.jpg', bandAlt: 'A Ford Everest SUV',
   },
 };
 
@@ -95,6 +109,7 @@ export function PartnerPage() {
       <InstallBanner />
       <section className="pl-hero">
         <div className="pl-inner">
+          <div className="pl-copy">
           <div className="pl-switch" role="tablist" aria-label="Partner type">
             <Link to="/partner/drive" className={kind === 'drive' ? 'active' : ''}><IdCard className="ico" aria-hidden="true" />Driver</Link>
             <Link to="/partner/owner" className={kind === 'owner' ? 'active' : ''}><Car className="ico" aria-hidden="true" />Car owner</Link>
@@ -103,37 +118,76 @@ export function PartnerPage() {
           <h1>{c.title}</h1>
           <p className="pl-intro">{c.intro}</p>
           <a className="primary big" href="#apply">Apply now</a>
+          </div>
+          <figure className="pl-photo">
+            <img src={c.photo} alt={c.photoAlt} />
+            <figcaption className="photo-credit"><Link to="/credits">Photo credit</Link></figcaption>
+          </figure>
         </div>
       </section>
 
       <main className="page pl-page">
-        <section>
-          <h2 className="big-title">Why partner with us</h2>
-          <ol className="pl-why">
+        <section className="pl-section">
+          <p className="pl-label">Why partner with us</p>
+          <ol className="pl-bigrows">
             {c.why.map((w, i) => (
-              <li key={w.title} className="card"><span className="step-num">{i + 1}</span><strong>{w.title}</strong><p className="muted">{w.text}</p></li>
+              <li key={w.title}>
+                <span className="pl-num">{i + 1}</span>
+                <h3>{w.title}</h3>
+                <p>{w.text}</p>
+              </li>
             ))}
           </ol>
         </section>
 
-        <section>
-          <h2 className="big-title">Get started</h2>
-          <ol className="pl-steps">
-            {c.steps.map((s, i) => <li key={s}><span className="step-num">{i + 1}</span><span>{s}</span></li>)}
-          </ol>
+        <section className="pl-section">
+          <h2 className="pl-heading">Ways to earn as a {kind === 'drive' ? 'driver' : 'car owner'}-partner</h2>
+          <div className="pl-row">
+            <p className="pl-label">Benefits</p>
+            <div className="pl-groups">
+              {c.benefits.map((b) => (
+                <div key={b.title}>
+                  <h3>{b.title}</h3>
+                  <ul>{b.bullets.map((x) => <li key={x}>{x}</li>)}</ul>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
-        <section className="card pl-req">
-          <h2>Who can apply?</h2>
-          <ul>{c.requirements.map((r) => <li key={r}>{r}</li>)}</ul>
+        <section className="pl-section">
+          <div className="pl-row">
+            <h2 className="pl-heading">Who can apply?</h2>
+            <ul className="pl-bullets">{c.requirements.map((r) => <li key={r}>{r}</li>)}</ul>
+          </div>
+          <figure className="pl-band">
+            <img src={c.band} alt={c.bandAlt} loading="lazy" />
+            <figcaption className="photo-credit"><Link to="/credits">Photo credit</Link></figcaption>
+          </figure>
         </section>
 
-        <section>
-          <h2 className="big-title">Got questions? We’ve got answers.</h2>
-          <div className="pl-faq">
-            {c.faqs.map((f) => (
-              <details key={f.q} className="card"><summary>{f.q}</summary><p className="muted">{f.a}</p></details>
-            ))}
+        <section className="pl-section">
+          <div className="pl-row">
+            <p className="pl-label">What do I need to do?</p>
+            <div>
+              <ol className="pl-bullets pl-ordered">{c.steps.map((s) => <li key={s}>{s}</li>)}</ol>
+              <div className="pl-allset">
+                <h3>All set? You’re almost there.</h3>
+                <p><a href="#apply">Apply here</a> to send your application.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="pl-section">
+          <div className="pl-row">
+            <p className="pl-label">FAQs</p>
+            <div className="pl-faq">
+              <h2 className="pl-heading small">Got questions? We’ve got answers.</h2>
+              {c.faqs.map((f) => (
+                <details key={f.q}><summary>{f.q}</summary><p>{f.a}</p></details>
+              ))}
+            </div>
           </div>
         </section>
 
