@@ -9,9 +9,10 @@ import type { VehicleSummary } from '../types';
 import { BadgePercent, Camera, Car, IdCard, ShieldCheck, UserRound, Wallet } from 'lucide-react';
 
 const categories = [
-  { type: 'Sedan', label: 'Sedans', hint: 'City trips', img: '/images/vehicles/sedan.svg' },
-  { type: 'SUV', label: 'SUVs', hint: 'Family & province', img: '/images/vehicles/suv.svg' },
-  { type: 'Van', label: 'Vans', hint: 'Groups up to 15', img: '/images/vehicles/van.svg' },
+  // Real photos (credited on the /credits page via photoCredits.ts).
+  { type: 'Sedan', label: 'Sedans', hint: 'City trips', img: '/images/cars/toyota-vios.jpg' },
+  { type: 'SUV', label: 'SUVs', hint: 'Family & province', img: '/images/cars/toyota-fortuner.jpg' },
+  { type: 'Van', label: 'Vans', hint: 'Groups up to 15', img: '/images/cars/toyota-hiace-commuter.jpg' },
 ];
 
 /** Landing page: one simple search first (like Turo/Klook), then categories, how it works and top cars. */

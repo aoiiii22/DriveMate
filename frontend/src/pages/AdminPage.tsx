@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api';
+import { AdminSummary } from '../components/WelcomeSummary';
+import { useTabParam } from '../lib/useTabParam';
 import { AuthImage } from '../components/AuthImage';
 import { shortDate, shortDateTime } from '../format';
 import { peso } from '../format';
@@ -10,11 +12,11 @@ type AdminTab = 'verifications' | 'partners' | 'promos';
 
 /** Admin: review ID verifications and partner applications, manage promo codes. */
 export function AdminPage() {
-  const [tab, setTab] = useState<AdminTab>('verifications');
+  const [tab, setTab] = useTabParam<AdminTab>(['verifications', 'partners', 'promos']);
   const tabs: [AdminTab, string][] = [['verifications', 'ID verifications'], ['partners', 'Partner applications'], ['promos', 'Promo codes']];
   return (
     <main className="page">
-      <h2 className="page-title">Admin</h2>
+      <AdminSummary />
       <div className="filters" role="tablist">
         {tabs.map(([key, label]) => (
           <button key={key} role="tab" aria-selected={tab === key} className={tab === key ? 'primary small' : 'ghost small'}

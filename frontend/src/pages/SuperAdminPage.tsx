@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { api, queryString } from '../api';
 import { useAuth } from '../auth';
+import { AdminSummary } from '../components/WelcomeSummary';
 import { peso, shortDate, shortDateTime } from '../format';
 import { useToast } from '../toast';
 import type { AuditEntry, AuthResponse, UserDetail, UserListItem } from '../types';
@@ -14,10 +15,8 @@ export function SuperAdminPage() {
   const [tab, setTab] = useState<Tab>('users');
   return (
     <main className="page">
-      <div className="section-head">
-        <h1 className="page-title">Super admin</h1>
-        <Link to="/admin">Admin tools (verifications, partners, promos) →</Link>
-      </div>
+      {/* The cards already link to the admin tools, as does "Admin" in the header. */}
+      <AdminSummary />
       <div className="tabs" role="tablist">
         <button role="tab" aria-selected={tab === 'users'} className={tab === 'users' ? 'active' : ''} onClick={() => setTab('users')}><Users className="ico" aria-hidden="true" /> Users</button>
         <button role="tab" aria-selected={tab === 'activity'} className={tab === 'activity' ? 'active' : ''} onClick={() => setTab('activity')}><ScrollText className="ico" aria-hidden="true" /> Activity log</button>

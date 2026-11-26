@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api';
+import { OwnerSummary } from '../components/WelcomeSummary';
+import { useTabParam } from '../lib/useTabParam';
 import { EarningsPanel } from '../components/EarningsPanel';
 import { MessageThread } from '../components/MessageThread';
 import { MonthCalendar } from '../components/MonthCalendar';
@@ -17,11 +19,11 @@ interface Props {
 
 /** Turo-style host dashboard: bookings to handle, cars and calendars, earnings. */
 export function OwnerPage({ onInspect }: Props) {
-  const [tab, setTab] = useState<Tab>('bookings');
+  const [tab, setTab] = useTabParam<Tab>(['bookings', 'cars', 'earnings']);
 
   return (
     <main className="page">
-      <h2 className="page-title">Owner dashboard</h2>
+      <OwnerSummary />
       <div className="filters" role="tablist">
         {([['bookings', 'Bookings'], ['cars', 'My cars'], ['earnings', 'Earnings']] as const).map(([key, label]) => (
           <button key={key} role="tab" aria-selected={tab === key} className={tab === key ? 'primary small' : 'ghost small'}

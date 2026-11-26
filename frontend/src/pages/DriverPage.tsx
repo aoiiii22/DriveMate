@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api';
+import { DriverSummary } from '../components/WelcomeSummary';
+import { useTabParam } from '../lib/useTabParam';
 import { EarningsPanel } from '../components/EarningsPanel';
 import { MessageThread } from '../components/MessageThread';
 import { TripPhotos } from '../components/TripPhotos';
@@ -20,7 +22,7 @@ export function DriverPage({ onInspect }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [openPhotos, setOpenPhotos] = useState<number | null>(null);
   const [openChat, setOpenChat] = useState<number | null>(null);
-  const [tab, setTab] = useState<'trips' | 'earnings'>('trips');
+  const [tab, setTab] = useTabParam(['trips', 'earnings'] as const);
 
   const loadTrips = useCallback(() => {
     api.get<DriverTrip[]>('/driver/trips').then(setTrips).catch((e: Error) => setError(e.message));
@@ -71,7 +73,7 @@ export function DriverPage({ onInspect }: Props) {
 
   return (
     <main className="page">
-      <h2 className="page-title">Driver dashboard</h2>
+      <DriverSummary />
 
       <section className="card driver-status">
         <div>

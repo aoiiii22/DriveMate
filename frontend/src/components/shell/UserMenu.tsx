@@ -38,7 +38,7 @@ export function UserMenu() {
               <p className="truncate text-xs font-normal text-muted-foreground">{user.email}</p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild className={item}><Link to="/trips"><Briefcase aria-hidden="true" />My trips</Link></DropdownMenuItem>
+            {user.role === 'Customer' && <DropdownMenuItem asChild className={item}><Link to="/trips"><Briefcase aria-hidden="true" />My trips</Link></DropdownMenuItem>}
             {dash && <DropdownMenuItem asChild className={item}><Link to={dash.to}><LayoutDashboard aria-hidden="true" />{dash.label}</Link></DropdownMenuItem>}
             <DropdownMenuItem asChild className={item}><Link to="/alerts"><Bell aria-hidden="true" />Alerts</Link></DropdownMenuItem>
             <DropdownMenuSeparator />

@@ -5,6 +5,7 @@ import { useAuth } from './auth';
 import { BottomTabs } from './components/shell/BottomTabs';
 import { SiteFooter } from './components/shell/SiteFooter';
 import { SiteHeader } from './components/shell/SiteHeader';
+import { homePath } from './components/shell/nav';
 import { TooltipProvider } from './components/ui/tooltip';
 import { AccountPage } from './pages/AccountPage';
 import { AdminPage } from './pages/AdminPage';
@@ -64,7 +65,7 @@ function App() {
               transition={{ duration: 0.15, ease: 'easeOut' }}
             >
               <Routes location={location}>
-                <Route path="/" element={<HomePage />} />
+                <Route path="/" element={<RoleHome />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/cars/:id" element={<CarRoute drafts={drafts} setDrafts={setDrafts} />} />
                 <Route path="/login" element={<AuthPage mode="login" />} />
@@ -107,6 +108,16 @@ function RequireAuth({ children, role }: { children: ReactNode; role?: User['rol
     return <main className="page"><p className="card empty">This page is for {allowed.join(' / ').toLowerCase()} accounts.</p></main>;
   }
   return children;
+}
+
+/**
+ * "/" depends on who you are: visitors and customers get the car-rental home page;
+ * owners, drivers and admins go to their own dashboard (also right after logging in).
+ */
+function RoleHome() {
+  const { user } = useAuth();
+  if (user && user.role !== 'Customer') return <Navigate to={homePath(user)} replace />;
+  return <HomePage />;
 }
 
 function CarRoute({ drafts, setDrafts }: {
