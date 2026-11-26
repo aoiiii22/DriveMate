@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { NotificationMenu } from './NotificationMenu';
 import { PartnerMenu } from './PartnerMenu';
 import { UserMenu } from './UserMenu';
-import { pageToPath } from './nav';
+import { homePath, isNavActive, pageToPath, roleNav } from './nav';
 
 /** Pages that already have their own search box, so the compact pill would be a duplicate. */
 const noPill = ['/', '/search', '/login', '/register'];
@@ -17,8 +17,11 @@ const noPill = ['/', '/search', '/login', '/register'];
 export function SiteHeader() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  // Owners, drivers and admins see their work links instead of the car-search pill.
+  const isPartnerOrStaff = Boolean(user && user.role !== 'Customer');
+  const workLinks = isPartnerOrStaff ? roleNav(user).filter((n) => n.to !== '/alerts' && n.to !== '/account') : [];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
@@ -31,12 +34,27 @@ export function SiteHeader() {
     <header className={cn('tw sticky top-0 z-40 bg-background/90 backdrop-blur-md transition-shadow duration-300', scrolled ? 'shadow-[0_1px_12px_rgba(11,30,63,0.08)]' : 'shadow-[0_1px_0_var(--border)]')}>
       <ViewAsBanner />
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:h-20 md:px-8">
-        <Link to="/" className="flex items-center gap-2 text-xl font-extrabold tracking-tight md:text-2xl" aria-label="DriveMate home">
+        <Link to={user ? homePath(user) : '/'} className="flex items-center gap-2 text-xl font-extrabold tracking-tight md:text-2xl" aria-label="DriveMate home">
           <Logo size={30} />
           <span>Drive<span className="text-primary">Mate</span></span>
         </Link>
 
-        {!noPill.includes(pathname) && (
+        {isPartnerOrStaff && (
+          <div className="hidden items-center gap-1 md:flex">
+            {workLinks.map((n) => {
+              const active = isNavActive(n.to, pathname, search);
+              return (
+                <Link key={n.to} to={n.to} aria-current={active ? 'page' : undefined}
+                  className={cn('flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors',
+                    active ? 'bg-accent text-primary' : 'text-muted-foreground hover:bg-muted hover:text-foreground')}>
+                  <n.icon className="size-4" aria-hidden="true" />{n.label}
+                </Link>
+              );
+            })}
+          </div>
+        )}
+
+        {!isPartnerOrStaff && !noPill.includes(pathname) && (
           <button
             type="button"
             onClick={() => navigate('/search')}

@@ -11,9 +11,11 @@ BM2506 Wadhwani Venture Journey project, STI.
 | Backend | ASP.NET Core Web API (.NET 10), C# |
 | Database | Entity Framework Core + SQLite (file: `DriveMate.Server/App_Data/drivemate.db`) |
 | Auth | ASP.NET Core Identity + JWT, roles `Customer`, `Driver`, `Owner`, `Admin` |
-| Frontend | React 19 + Vite + TypeScript (`frontend/`) |
+| Frontend | React 19 + Vite + TypeScript + React Router 7 (`frontend/`) |
+| UI & styling | Tailwind CSS v4, shadcn/ui components (built on Radix UI), Motion animations, Lucide icons |
 | Orchestration | .NET Aspire AppHost (starts API + React together) |
 | API docs | Swagger UI (development only) |
+| Hosting | Vercel (website) + Render (API, database, uploads) |
 
 ## Prerequisites
 

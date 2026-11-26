@@ -182,7 +182,8 @@ input[aria-invalid='true'] { border-color: var(--dm-danger); background: #FFFBFA
 .vehicle-card img { object-position: center 60%; }
 .photo-credit { margin: 6px 0 0; font-size: 0.72rem; color: var(--dm-gray); }
 .photo-credit a { color: inherit; text-decoration: underline; }
-.category img { object-fit: contain; }
+/* Category tiles: real photos fill a rounded frame (cropped to fit) instead of floating inside it */
+.category img { width: 100%; object-fit: cover; object-position: center 60%; border-radius: 12px; background: var(--dm-surface); }
 
 /* ---------- Login / sign up: one card, a purple panel slides between the two forms ---------- */
 .auth-page { display: grid; place-items: center; padding: 24px 16px 40px; }

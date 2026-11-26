@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { CustomerSummary } from '../components/WelcomeSummary';
 import { api } from '../api';
 import { MessageThread } from '../components/MessageThread';
 import { StarInput } from '../components/StarInput';
@@ -80,7 +81,8 @@ export function BookingsPage({ onInspect }: Props) {
 
   return (
     <main className="page">
-      <h1 className="page-title">My trips</h1>
+      <CustomerSummary />
+      <h2 className="page-title">My trips</h2>
       {error && <p className="error">{error}</p>}
       {bookings === null && !error && <p className="muted">Loading…</p>}
 
